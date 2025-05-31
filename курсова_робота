@@ -5,7 +5,6 @@
 
 using namespace std;
 
-
 enum Type_func {
     sin_func = 1,
     cos_func,
@@ -17,7 +16,6 @@ enum Type_func {
 Type_func vybranaFunc; 
 
 double polynom_a = 0, polynom_b = 0, polynom_c = 0; 
-
 
 double func(double x) {
     switch (vybranaFunc) {
@@ -31,7 +29,7 @@ double func(double x) {
         return exp(x);
   
     default:
-        cerr << "Помилка: Невідомий тип функції обрано!" << endl;
+        cerr << "Помилка: Невідомий тип функції!" << endl;
         return 1;
     }
 }
@@ -40,7 +38,7 @@ double func(double x) {
 double method_priamokytnikiv_serepdniy(double a, double b, int n) {
     if (n <= 0) {
         cerr << "Кількість розбиттів n повинна бути > 0 для методу прямокутників." << endl;
-        return NAN;
+        return 1;
     }
     double h = (b - a) / n;
     double result = 0;
@@ -73,7 +71,7 @@ double method_simpsona(double a, double b, int n) {
     }
     if (n % 2 != 0) {
         n++; 
-        cout << "Для методу Сімпсона n було збільшено до " << n << " (потрібно парне число)." << endl;
+        cout << "Для даного методу n було збільшено до " << n << " (потрібно парне число)." << endl;
     }
     double h = (b - a) / n;
     double result = func(a) + func(b);
@@ -101,7 +99,7 @@ double method_bode(double a, double b, int n) {
     }
     int original_n_for_bode = n;
     if (n % 4 != 0) {
-        n = ((n / 4) + 1) * 4;
+        n = ((n / 4) + 1) * 4; 
         if (n == 0 && original_n_for_bode > 0) n = 4; 
         cout << "Для формули Боде n (" << original_n_for_bode << ") було скориговано до " << n << " (потрібно кратне 4)." << endl;
     }
@@ -121,10 +119,10 @@ double method_bode(double a, double b, int n) {
         double x3 = x0 + 3 * h;
         double x4 = x0 + 4 * h;
 
-    
+        
         if (i + 4 == n && abs(x4 - b) > 1e-9 && x4 > b) { 
             x4 = b;
-           
+          
         }
         if (x4 > b + 1e-9) { 
             continue;
@@ -137,10 +135,9 @@ double method_bode(double a, double b, int n) {
 }
 
 
-
 void choose_function() {
     int choice = 0;
-    cout << "\nОберіть функцію для інтегрування:\n";
+    cout << "Оберіть функцію для інтегрування:\n";
     cout << "1. sin(x)\n";
     cout << "2. cos(x)\n";
     cout << "3. Поліном (ax^2 + bx + c)\n";
@@ -148,51 +145,63 @@ void choose_function() {
     cout << "Ваш вибір: ";
 
     while (!(cin >> choice) || choice < 1 || choice > 4) {
-        cout << "Невірний вибір. Будь ласка, введіть число від 1 до 4: ";
-       
+        cin.clear();
+        cin.ignore(100, '\n');
+        cout << "Будь ласка, введіть число від 1 до 4: ";
     }
-    vybranaFunc = static_cast<Type_func>(choice); 
+
+    vybranaFunc = static_cast<Type_func>(choice);
 
     if (vybranaFunc == polynom) {
         cout << "Введіть коефіцієнти для полінома ax^2 + bx + c:\n";
+
         cout << "a: ";
         while (!(cin >> polynom_a)) {
-            cout << "Помилка введення. Будь ласка, введіть числове значення для a: ";
+            cin.clear();
+            cin.ignore(100, '\n');
+            cout << "Будь ласка, введіть числове значення для a: ";
         }
+
         cout << "b: ";
         while (!(cin >> polynom_b)) {
-            cout << "Помилка введення. Будь ласка, введіть числове значення для b: ";
-
+            cin.clear();
+            cin.ignore(100, '\n');
+            cout << "Будь ласка, введіть числове значення для b: ";
         }
+
         cout << "c: ";
         while (!(cin >> polynom_c)) {
-            cout << "Помилка введення. Будь ласка, введіть числове значення для c: ";
-
+            cin.clear();
+            cin.ignore(100, '\n');
+            cout << "Будь ласка, введіть числове значення для c: ";
         }
     }
 }
 
 
+
 void input_user(double& a, double& b, int& n) {
     cout << "Введіть нижню межу інтегрування a: ";
     while (!(cin >> a)) {
-        cout << "Помилка введення. Будь ласка, введіть числове значення для a: ";
-
+        cin.clear();
+        cin.ignore(100, '\n');
+        cout << "Будь ласка, введіть числове значення для a: ";
     }
 
     cout << "Введіть верхню межу інтегрування b: ";
     while (!(cin >> b) || b <= a) {
-       if (b <= a) { 
+        cin.clear();
+        cin.ignore(100, '\n');
+        if (b <= a)
             cout << "Верхня межа b повинна бути більшою за нижню межу a. ";
-        }
         cout << "Будь ласка, введіть числове значення для b: ";
- 
     }
 
     cout << "Введіть кількість розбиття n (ціле число > 0): ";
     while (!(cin >> n) || n <= 0) {
-        cout << "Помилка введення. Кількість розбиттів n повинна бути цілим числом > 0: ";
-
+        cin.clear();
+        cin.ignore(100, '\n');
+        cout << "Кількість розбиттів n повинна бути цілим числом > 0: ";
     }
 }
 
@@ -206,7 +215,6 @@ int main() {
 
     choose_function(); 
 
-    
     if (vybranaFunc == unknown_func || static_cast<int>(vybranaFunc) == 0) { 
         cerr << "Функцію не обрано або обрано некоректно. Програма завершується." << endl;
         return 1;
@@ -214,15 +222,14 @@ int main() {
 
     input_user(a, b, n); 
 
-    
     double rect = method_priamokytnikiv_serepdniy(a, b, n); 
     double trap = method_trapeziy(a, b, n);               
     double simp = method_simpsona(a, b, n);               
-    double gauss = method_gaussa(a, b);                   
+    double gauss = method_gaussa(a, b);                  
     double bode = method_bode(a, b, n);                   
 
-    cout << fixed << setprecision(8); 
-    cout << "\nРезультати чисельного інтегрування:\n";
+    cout << fixed << setprecision(5); 
+    cout << "Результати чисельного інтегрування:\n";
     if (!isnan(rect)) cout << "Метод прямокутників: " << rect << endl;
     if (!isnan(trap)) cout << "Метод трапецій:        " << trap << endl;
     if (!isnan(simp)) cout << "Метод Сімпсона:        " << simp << endl;
